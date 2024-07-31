@@ -1,0 +1,16 @@
+# Remover arquivos do índice do Git
+git rm --cached logs/*
+
+# Adicionar e comitar o .gitignore
+echo "logs/*" >> .gitignore
+git add .gitignore
+git commit -m "Update .gitignore to exclude log files"
+
+# Limpar o histórico do Git
+git filter-branch --index-filter 'git rm --cached --ignore-unmatch logs/*' --prune-empty -- --all
+rm -rf .git/refs/original/
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+
+# Forçar o push para o repositório remoto
+git push origin master --force
